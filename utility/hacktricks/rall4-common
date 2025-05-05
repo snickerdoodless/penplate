@@ -1,0 +1,46 @@
+REFERENCED BY S1REN
+
+Glosarry:
+<sometext> = need adjustment
+
+==============================================================================
+
+# FUZZING
+
+->wFuzz-Files<-
+export URL="http://<IP>:80/FUZZ"
+wfuzz -c -z file,/opt/SecLists/Discovery/Web-Content/raft-medium-files.txt --hc 404 $URL
+
+->wFuzz-Directory<-
+export URL="http://<IP>:80/FUZZ/"
+wfuzz -c -z file,/opt/SecLists/Discovery/Web-Content/raft-medium-directories.txt --hc 404 "$URL"
+
+->dirSearch-Files<-
+dirsearch -u $URL -w /opt/SecLists/Discovery/Web-Content/raft-large-words.txt -x 400-500 
+
+->dirSearch-Directory<- 
+dirsearch -u $URL -w /opt/SecLists/Discovery/Web-Content/big.txt -x 400-500 -r
+
+==============================================================================
+
+# WPSCAN
+
+->All-Enum<-
+export URL="http://<IP>:80/wordpress/"
+wpscan --url "UR$L" -e p,t,u
+
+->Brute-Force-Login-Page<-
+export URL="http://<IP>:80/wordpress/wp-admin.php"
+  > Custom User: wpscan --url "$URL" -U <user> -P /usr/share/wordlists/rockyou.txt 
+  > Custom Pass: wpscan --url "$URL" -U /opt/SecLists/Usernames/Names/names.txt -P <pass>
+
+==============================================================================
+
+# HYDRA
+
+->Brute-Login<-
+hydra -L <path> -P /opt/SecLists/Passwords/<path> -f -v <IP> http-post-form "/login.php:<field_user>=^USER^&<field_pass>=^PASS^:Login failed" -o hydra.log -s <port> # -s use if needed
+  > hydra -R  #restore sessions
+
+->Enum-Username<-
+hydra -L <path> -p test123 <IP> http-post-form "/login:username=^USER^&password=test123:Invalid username"

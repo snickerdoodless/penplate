@@ -1,0 +1,10 @@
+
+CRACK THOSE PASS WITH THE BOIS!
+
+==============================================================================
+
+# HASHCAT
+
+# ->hascat-usage<- #
+hashid hashes.txt
+  > hashcat -m <hash_mode> -a 0 <hash_file> <wordlist>
