@@ -1,2 +1,7 @@
 *.ovpn
 ctf/
+.token
+/utility/github-scripts/chainbreaker/.git
+/utility/github-scripts/Upload_Bypass/.git
+
+

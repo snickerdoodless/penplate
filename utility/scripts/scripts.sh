@@ -9,27 +9,35 @@ if [ ! -d "$SOURCE_DIR" ]; then
     exit 1
 fi
 
-# List the scripts in the source directory
-echo "Available scripts:"
-files=("$SOURCE_DIR"/*.sh)  # Get all .sh files
-for i in "${!files[@]}"; do
-    # Extract the filename from the path
-    filename=$(basename "${files[i]}")
-    echo "$((i + 1)). $filename"
+# List items (files and folders) in the source directory
+echo "Available scripts and folders:"
+items=("$SOURCE_DIR"/*)
+for i in "${!items[@]}"; do
+    name=$(basename "${items[i]}")
+    if [ -d "${items[i]}" ]; then
+        echo "$((i + 1)). [DIR]  $name"
+    else
+        echo "$((i + 1)).       $name"
+    fi
 done
 
 # Prompt user for selection
-read -p "Enter the number of the script you want to copy: " choice
+read -p "Enter the number of the item you want to copy: " choice
 
 # Validate the input
-if [[ ! "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#files[@]}" ]; then
+if [[ ! "$choice" =~ ^[0-9]+$ ]] || [ "$choice" -lt 1 ] || [ "$choice" -gt "${#items[@]}" ]; then
     echo "Invalid choice. Please run the script again."
     exit 1
 fi
 
-# Copy the selected script to the current directory
-selected_file="${files[$((choice - 1))]}"
-cp "$selected_file" .
+# Get the selected item
+selected_item="${items[$((choice - 1))]}"
 
-# Confirm the copy
-echo "Copied $(basename "$selected_file") to the current directory."
+# Copy file or directory accordingly
+if [ -d "$selected_item" ]; then
+    cp -r "$selected_item" .
+    echo "Copied directory $(basename "$selected_item") to the current directory."
+else
+    cp "$selected_item" .
+    echo "Copied file $(basename "$selected_item") to the current directory."
+fi

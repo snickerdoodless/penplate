@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-SOURCE_FILE=$1
+SOURCE_FILE=/usr/share/exploitdb/exploits/$1
 
 # Check if path exist
 if [ ! -f "$SOURCE_FILE" ]; then
